@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh -xe
 
 # Preconditions
 [ -S /var/run/docker.sock ]
@@ -7,8 +7,9 @@ java -version
 # Add user to docker group
 gid="`stat -c '%g' /var/run/docker.sock`"
 [ "$gid" -gt 0 ]
-addgroup -g "$gid" "docker$gid"
-addgroup jenkins "docker$gid"
+delgroup docker || true
+addgroup -g "$gid" docker
+addgroup jenkins docker
 id jenkins
 
 # Generate random password if not given
